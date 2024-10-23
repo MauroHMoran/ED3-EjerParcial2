@@ -27,7 +27,7 @@ static uint32_t flanco_subida=0;
 static uint32_t flanco_bajada=0;
 static uint32_t t_on=0;
 static uint32_t t_off=0;
-static bool int_flanco=FALSE;
+static uint32_t int_flanco=FALSE;
 static uint32_t contador=0;
 static uint32_t average=0;
 
@@ -40,7 +40,7 @@ void cfg_ports(void)
     port_cfg.Pinmode=PINSEL_PINMODE_PULLUP;
     port_cfg.OpenDrain=PINSEL_PINMODE_NORMAL;
 
-    PINSEL_ConfigPin(*port_cfg);
+    PINSEL_ConfigPin(&port_cfg);
 }
 
 void cfg_tmr_cap_match(void)
@@ -48,17 +48,17 @@ void cfg_tmr_cap_match(void)
     TIM_TIMERCFG_Type tmr_cfg:
     tmr_cfg.PrescaleOption=TIM_PRESCALE_USVAL;
     tmr.cfg.PrescaleValue=1;                    //el contador aumenta cada un useg
-    TIM_Init(LPC_TIM2, TIM_TIMER_MODE, *tmr_cfg);
+    TIM_Init(LPC_TIM2, TIM_TIMER_MODE, &tmr_cfg);
 
     TIM_CAPTURECFG_Type cap_cfg:
     cap_cfg.CaptureChannel=0;
     cap_cfg.RisingEdge=ENABLE;
     cap_cfg.FallingEdge=ENABLE;
     cap_cfg.IntOnCaption=ENABLE;
-    TIM_ConfigCapture(LPC_TIM2, *cap_cfg);
+    TIM_ConfigCapture(LPC_TIM2, &cap_cfg);
 
     tmr_cfg.PrecaleValue=1000;      //cada 1ms aumenta el contador;
-    TIM_Init(LPC_TIM0, TIM_TIMER_MODE, *tmr_cfg);
+    TIM_Init(LPC_TIM0, TIM_TIMER_MODE, &tmr_cfg);
 
     TIM_MATCHCFG_Type match_cfg;
     match_cfg.MatchChannel=0;
@@ -67,7 +67,7 @@ void cfg_tmr_cap_match(void)
     match_cfg.StopOnMatch=DISABLE;
     match_cfg.ExtMatchOutputType=TIM_EXTMATCH_NOTHING;
     match_cfg.MatchValue=5;
-    TIM_ConfigMatch(LPC_TIM0, *match_cfg);
+    TIM_ConfigMatch(LPC_TIM0, &match_cfg);
 }
 
 void TIMER0_IRQHandler(void)
