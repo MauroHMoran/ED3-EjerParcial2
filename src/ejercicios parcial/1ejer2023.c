@@ -31,6 +31,24 @@ static uint32_t int_flanco=FALSE;
 static uint32_t contador=0;
 static uint32_t average=0;
 
+int maint(void)
+{
+    SystemInit();
+    cfg_ports();
+    cfg_tmr_cap_match();
+    TIM_Cmd(LPC_TIM0, ENABLE);
+    TIM_Cmd(LPC_TIM2, ENABLE);
+    NVIC_EnableIRQ(TIMER0_IRQn);
+    NVIC_EnableIRQ(TIMER2_IRQn);
+
+    while (1)
+    {
+        asm _NOP;   //wait for interruptions
+    }
+    
+}
+
+
 void cfg_ports(void)
 {
     PINSEL_CFG_Type port_cfg;
